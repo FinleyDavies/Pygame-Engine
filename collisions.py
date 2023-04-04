@@ -34,8 +34,8 @@ class SweepPrune:
     def __init__(self, collidables):
         self.endpointsX = []
         self.endpointsY = []
-        self.overlapsX = []
-        self.overlapsY = []
+        self.overlapsX = set()
+        self.overlapsY = set()
         for body in collidables:
             self.endpointsX.append(EndPoint(body, Vector((0, 1)), False))
             self.endpointsX.append(EndPoint(body, Vector((0, 1)), True))
@@ -61,11 +61,11 @@ class SweepPrune:
             while j > 0 and endpoints[j - 1] > endpoints[j]:
                 if endpoints[j - 1].is_end != endpoints[j].is_end:
                     if endpoints[j - 1].is_end:
-                        overlaps.append({endpoints[j].owner,
-                                         endpoints[j - 1].owner})
+                        overlaps.add(frozenset({endpoints[j].owner,
+                                         endpoints[j - 1].owner}))
                     else:
-                        overlaps.remove({endpoints[j].owner,
-                                         endpoints[j - 1].owner})
+                        overlaps.remove(frozenset({endpoints[j].owner,
+                                         endpoints[j - 1].owner}))
                 endpoints[j], endpoints[j - 1] = endpoints[j - 1], endpoints[j]
                 j = j - 1
 
@@ -78,13 +78,10 @@ class SweepPrune:
         self.overlapsY = self.detect_overlaps(self.endpointsY, self.overlapsY)
 
     def get_broad_pairs(self):
-        pairs = []
         self.detect_overlaps_x()
         self.detect_overlaps_y()
-        for broadPair in self.overlapsX:
-            if broadPair in self.overlapsY:
-                pairs.append(broadPair)
-        return pairs
+
+        return list(self.overlapsX.intersection(self.overlapsY))
 
 
 class CollisionHandler:
