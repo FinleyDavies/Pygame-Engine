@@ -3,9 +3,6 @@ from vector import Vector, VectorSpace
 from math import sin, cos, pi
 from random import randint as ran
 
-import logging
-logging.log
-
 
 class Hovercraft:
     # velocity at point P in local space;

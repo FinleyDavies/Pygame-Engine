@@ -8,6 +8,11 @@ from random import randint
 
 pygame.init()
 
+# todo use numpy or opengl to transform the screen, 74% of the draw function is spent transforming
+#  (transforming per point is inefficient)
+# todo cache get_bounding_rect operation in broad phase collision detection
+# todo use numpy to vectorise integration operations over all objects?
+
 
 class Circle:
     def __init__(self, screen, radius, position, spaces=None, colour=None):
@@ -145,7 +150,7 @@ def main():
         for circle in circles:
             circle.draw()
             circle.update()
-            # circle.draw_trail()
+            circle.draw_trail()
         circles[0].draw_trail()
         circles[1].draw_trail()
         # print(circles[0].velocity)
